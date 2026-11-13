@@ -8,6 +8,14 @@ This service allows client applications residing in one tenant (e.g., **SharePoi
 
 ## 🏛️ Architecture
 
+[![crosstenant-auth-bridge architecture: SharePoint Online SPFx web part in Tenant A (M365 GCC) calls crosstenant-auth-bridge Azure Function in Tenant B (Azure Government), which validates Entra ID JWT in code and invokes Azure AI Foundry agent via Managed Identity.](docs/output/architecture/crosstenant-auth-bridge.svg)](docs/output/architecture/crosstenant-auth-bridge.svg)
+
+[PNG image](docs/output/architecture/crosstenant-auth-bridge.png) | [Editable Excalidraw source](docs/output/architecture/crosstenant-auth-bridge.excalidraw) | [Interactive Archify diagram](docs/architecture/crosstenant-auth-bridge.html)
+
+The diagram describes the checked-in infrastructure and runtime, not live deployment status. The frontend SPFx Web Part runs in Tenant A (M365 GCC Moderate / Commercial Entra ID), while the auth broker Azure Function and Azure AI Foundry project run in Tenant B (Azure Government / Sovereign Cloud). In-code JWT validation verifies caller tokens directly against Tenant A's public discovery endpoint without B2B directory synchronization; `ScopedCredential` rewrites the Managed Identity token scope to `https://ai.azure.us/.default`.
+
+### Architecture Flow
+
 ```text
 [Tenant A: M365 GCC Moderate / Commercial Entra ID]
        │
@@ -42,10 +50,6 @@ This service allows client applications residing in one tenant (e.g., **SharePoi
        ▼ (Vector & File Search RAG)
 [Foundry Prompt Agent with Knowledge Store]
 ```
-
-### Interactive Architecture Diagram
-An interactive, standalone HTML architecture diagram generated via `/archify` is available in this repository:
-- [crosstenant-auth-bridge.html](docs/architecture/crosstenant-auth-bridge.html) (Download or open in browser for full pan, zoom, cards, and trace animation).
 
 ---
 
